@@ -1,87 +1,121 @@
-#include <stdio.h>
+#include  "main.h"
 
-const char* s = "1000-(3*2+1)+0$";
-
-int GetG(void);
-int GetE(void);
-int GetT(void);
-int GetP(void);
-int GetN(void);
-
-int GetG(void)
+int main()
 {
-    int val = GetE();
-    if(*s != '$')
-    {
-        printf("SyntaxErr\n");
-        return 0;
-    }
-    s++;
-    return val;
+    char* user_exp = NULL;
+    size_t st_size = ST_EXP_LEN;
+    getline(&user_exp, &st_size, stdin);
+
+    const char* s = user_exp;
+    int ans = GetG(&s);
+    printf("Your ans = %d\n", ans);
+
+    free(user_exp);
+    return 0;
 }
 
-int GetE(void)
+int GetG(const char** s)
 {
-    int val = GetT();
-    while(*s == '+' || *s == '-')
+    ON_DEBUG_PRINT("IN GetG\n");
+    assert(s);
+    assert(*s);
+
+    int val = GetE(s);
+    if((**s) != '\n')
     {
-        int op = *s;
-        s++;
-        int val2 = GetT();
+        ERR_PRINT("SyntaxErr\n");
+        return 0;
+    }
+    (*s)++;
+
+    ON_DEBUG_PRINT("OUT GetG\n");
+    return val;
+}
+int GetE(const char** s)
+{
+    ON_DEBUG_PRINT("IN GetE\n");
+
+    assert(s);
+    assert(*s);
+
+    int val = GetT(s);
+    while((**s) == '+' || (**s) == '-')
+    {
+        int op = (**s);
+        (*s)++;
+        int val2 = GetT(s);
         if(op == '+') val += val2;
         else          val -= val2;
     }
+
+    ON_DEBUG_PRINT("OUT GetE\n");
     return val;
 }
-
-int GetT(void)
+int GetT(const char** s)
 {
-    int val = GetP();
-    while(*s == '*' || *s == '/')
+    ON_DEBUG_PRINT("IN GetT\n");
+
+    assert(s);
+    assert(*s);
+
+    int val = GetP(s);
+    while((**s) == '*' || (**s) == '/')
     {
-        int op = *s;
-        s++;
-        int val2 = GetP();
+        int op = (**s);
+        (*s)++;
+        int val2 = GetP(s);
         if(op == '*') val *= val2;
         else          val /= val2;
     }
+
+    ON_DEBUG_PRINT("OUT GetT\n");
     return val;
 }
-
-int GetP(void)
+int GetP(const char** s)
 {
-    if(*s == '(')
+    ON_DEBUG_PRINT("IN GetP\n");
+
+    assert(s);
+    assert(*s);
+
+    if((**s) == '(')
     {
-        s++;
-        int val = GetE();
-        if(*s == ')')
+        ON_DEBUG_PRINT("Start '('E')'\n");
+        (*s)++;
+        int val = GetE(s);
+        if((**s) == ')')
         {
-            s++;
+            (*s)++;
+
+            ON_DEBUG_PRINT("OUT GetP '('E')'\n");
             return val;
         }
         else
         {
-            printf("SyntaxErr\n");
+            ERR_PRINT("SyntaxErr\n");
             return 0;
         }
     }
-    else return GetN();
-}
-
-int GetN()
-{
-    int val = 0;
-    while('0'<=*s && *s<='9')
+    else
     {
-        val = val*10 + (*s - '0');
-        s++;
+        ON_DEBUG_PRINT("OUT GetP N\n");
+        return GetN(s);
     }
-    return val;
 }
-
-int main()
+int GetN(const char** s)
 {
-    int ans = GetG();
-    printf("Your ans = %d\n", ans);
-    return 0;
+    ON_DEBUG_PRINT("IN GetN\n");
+
+    assert(s);
+    assert(*s);
+
+    int val = 0;
+    while('0'<=(**s) && (**s)<='9')
+    {
+        val = val*10 + ((**s) - '0');
+        (*s)++;
+    }
+    ON_DEBUG_PRINT("OUT GetN\n");
+
+    return val;
 }
