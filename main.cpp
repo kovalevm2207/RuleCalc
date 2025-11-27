@@ -4,7 +4,8 @@ int main()
 {
     char* user_exp = NULL;
     size_t st_size = ST_EXP_LEN;
-    getline(&user_exp, &st_size, stdin);
+    size_t n_pos = getline(&user_exp, &st_size, stdin);
+    user_exp[n_pos - 1] = '\0';
 
     const char* s = user_exp;
     int ans = GetG(&s);
@@ -21,7 +22,7 @@ int GetG(const char** s)
     assert(*s);
 
     int val = GetE(s);
-    if((**s) != '\n')
+    if((**s) != '\0')
     {
         ERR_PRINT("SyntaxErr\n");
         return 0;
