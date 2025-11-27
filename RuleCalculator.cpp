@@ -6,7 +6,12 @@ int GetG(const char** s)
     assert(s);
     assert(*s);
 
+    SkipSpaces(s);
+
     int val = GetE(s);
+
+    SkipSpaces(s);
+
     if((**s) != '\0')
     {
         ERR_PRINT("SyntaxErr\n");
@@ -23,6 +28,8 @@ int GetE(const char** s)
 
     assert(s);
     assert(*s);
+
+    SkipSpaces(s);
 
     int val = GetT(s);
     while((**s) == '+' || (**s) == '-')
@@ -44,7 +51,12 @@ int GetT(const char** s)
     assert(s);
     assert(*s);
 
+    SkipSpaces(s);
+
     int val = GetP(s);
+
+    SkipSpaces(s);
+
     while((**s) == '*' || (**s) == '/')
     {
         int op = (**s);
@@ -64,14 +76,21 @@ int GetP(const char** s)
     assert(s);
     assert(*s);
 
+    SkipSpaces(s);
+
     if((**s) == '(')
     {
         ON_DEBUG_PRINT("Start '('E')'\n");
         (*s)++;
+
+        SkipSpaces(s);
+
         int val = GetE(s);
         if((**s) == ')')
         {
             (*s)++;
+
+            SkipSpaces(s);
 
             ON_DEBUG_PRINT("OUT GetP '('E')'\n");
             return val;
@@ -95,7 +114,7 @@ int GetN(const char** s)
     assert(s);
     assert(*s);
 
-    GetS(s);
+    SkipSpaces(s);
 
     int val = 0;
     while('0'<=(**s) && (**s)<='9')
@@ -104,19 +123,15 @@ int GetN(const char** s)
         (*s)++;
     }
 
-    GetS(s);
-
     ON_DEBUG_PRINT("OUT GetN\n");
     return val;
 }
-int GetS(const char** s)
+int SkipSpaces(const char** s)
 {
-    ON_DEBUG_PRINT("IN GetS\n");
     assert(s);
     assert(*s);
 
     while(isspace(**s)) ++*s;
 
-    ON_DEBUG_PRINT("OUT GetS\n");
     return 0;
 }

@@ -22,7 +22,7 @@ int GetG(const char** s);
 int GetE(const char** s);
 int GetT(const char** s);
 int GetP(const char** s);
-int GetS(const char** s);
 int GetN(const char** s);
+int SkipSpaces(const char** s);
 
 #endif  // RULE_CALC_MAIN_H
