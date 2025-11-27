@@ -9,12 +9,12 @@
 #include "color_print.h"
 
 #ifdef DEBUG
-    #define ON_DEBUG_PRINT(text) printf(ORANGE_COLOR text RESET);
+    #define ON_DEBUG_PRINT(text) fprintf(stderr, ORANGE_COLOR text RESET);
 #else
     #define ON_DEBUG_PRINT(text)
 #endif
 
-#define ERR_PRINT(text) printf(RED_COLOR text RESET)
+#define ERR_PRINT(text) fprintf(stderr, RED_COLOR text RESET)
 
 const size_t ST_EXP_LEN = 5;
 
