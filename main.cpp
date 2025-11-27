@@ -110,13 +110,28 @@ int GetN(const char** s)
     assert(s);
     assert(*s);
 
+    GetS(s);
+
     int val = 0;
     while('0'<=(**s) && (**s)<='9')
     {
         val = val*10 + ((**s) - '0');
         (*s)++;
     }
-    ON_DEBUG_PRINT("OUT GetN\n");
 
+    GetS(s);
+
+    ON_DEBUG_PRINT("OUT GetN\n");
     return val;
+}
+int GetS(const char** s)
+{
+    ON_DEBUG_PRINT("IN GetS\n");
+    assert(s);
+    assert(*s);
+
+    while(isspace(**s)) ++*s;
+
+    ON_DEBUG_PRINT("OUT GetS\n");
+    return 0;
 }

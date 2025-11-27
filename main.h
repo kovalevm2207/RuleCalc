@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "color_print.h"
 
@@ -21,6 +22,7 @@ int GetG(const char** s);
 int GetE(const char** s);
 int GetT(const char** s);
 int GetP(const char** s);
+int GetS(const char** s);
 int GetN(const char** s);
 
 #endif  // RULE_CALC_MAIN_H
