@@ -1,6 +1,6 @@
 #include "RuleCalculator.h"
 
-int GetG(const char** s)
+double GetG(const char** s)
 {
     ON_DEBUG_PRINT("IN GetG\n");
     assert(s);
@@ -8,7 +8,7 @@ int GetG(const char** s)
 
     SkipSpaces(s);
 
-    int val = GetE(s);
+    double val = GetE(s);
 
     SkipSpaces(s);
 
@@ -22,7 +22,7 @@ int GetG(const char** s)
     ON_DEBUG_PRINT("OUT GetG\n");
     return val;
 }
-int GetE(const char** s)
+/*Node_t* */double GetE(const char** s)
 {
     ON_DEBUG_PRINT("IN GetE\n");
 
@@ -31,20 +31,20 @@ int GetE(const char** s)
 
     SkipSpaces(s);
 
-    int val = GetT(s);
+    double val = GetT(s); // Node_t* val1
     while((**s) == '+' || (**s) == '-')
     {
-        int op = (**s);
+        double op = (**s);
         (*s)++;
-        int val2 = GetT(s);
-        if(op == '+') val += val2;
+        double val2 = GetT(s);
+        if(op == '+') val += val2; //Node_t* val2 = TreeNodeCtor()
         else          val -= val2;
     }
 
     ON_DEBUG_PRINT("OUT GetE\n");
     return val;
 }
-int GetT(const char** s)
+double GetT(const char** s)
 {
     ON_DEBUG_PRINT("IN GetT\n");
 
@@ -53,15 +53,15 @@ int GetT(const char** s)
 
     SkipSpaces(s);
 
-    int val = GetP(s);
+    double val = GetP(s);
 
     SkipSpaces(s);
 
     while((**s) == '*' || (**s) == '/')
     {
-        int op = (**s);
+        double op = (**s);
         (*s)++;
-        int val2 = GetP(s);
+        double val2 = GetP(s);
         if(op == '*') val *= val2;
         else          val /= val2;
     }
@@ -69,7 +69,7 @@ int GetT(const char** s)
     ON_DEBUG_PRINT("OUT GetT\n");
     return val;
 }
-int GetP(const char** s)
+double GetP(const char** s)
 {
     ON_DEBUG_PRINT("IN GetP\n");
 
@@ -85,7 +85,7 @@ int GetP(const char** s)
 
         SkipSpaces(s);
 
-        int val = GetE(s);
+        double val = GetE(s);
         if((**s) == ')')
         {
             (*s)++;
@@ -107,7 +107,7 @@ int GetP(const char** s)
         return GetN(s);
     }
 }
-int GetN(const char** s)
+/*Node_t* */double GetN(const char** s)
 {
     ON_DEBUG_PRINT("IN GetN\n");
 
@@ -116,17 +116,32 @@ int GetN(const char** s)
 
     SkipSpaces(s);
 
-    int val = 0;
+    double val = 0;
     while('0'<=(**s) && (**s)<='9')
     {
         val = val*10 + ((**s) - '0');
         (*s)++;
     }
 
+    if(**s == '.')
+    {
+        ++*s;
+
+        double frac_part = 0;
+        double order = 1;
+        while('0'<=(**s) && (**s)<='9')
+        {
+            frac_part += ((**s) - '0') / pow(10, order++);
+            (*s)++;
+        }
+
+        val += frac_part;
+    }
+
     ON_DEBUG_PRINT("OUT GetN\n");
-    return val;
+    return val; // TreeNodeCtor_(NUM, {.num = val}, NULL, NULL)
 }
-int SkipSpaces(const char** s)
+double SkipSpaces(const char** s)
 {
     assert(s);
     assert(*s);

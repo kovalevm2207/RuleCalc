@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "color_print.h"
 
@@ -18,11 +19,11 @@
 
 const size_t ST_EXP_LEN = 5;
 
-int GetG(const char** s);
-int GetE(const char** s);
-int GetT(const char** s);
-int GetP(const char** s);
-int GetN(const char** s);
-int SkipSpaces(const char** s);
+double GetG(const char** s);
+double GetE(const char** s);
+double GetT(const char** s);
+double GetP(const char** s);
+double GetN(const char** s);
+double SkipSpaces(const char** s);
 
 #endif  // RULE_CALC_MAIN_H

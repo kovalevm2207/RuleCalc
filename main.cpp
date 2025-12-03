@@ -8,8 +8,8 @@ int main()
     user_exp[n_pos - 1] = '\0';
 
     const char* s = user_exp;
-    int ans = GetG(&s);
-    printf("Your ans = %d\n", ans);
+    double ans = GetG(&s);
+    printf("Your ans = %lg\n", ans);
 
     free(user_exp);
     return 0;
