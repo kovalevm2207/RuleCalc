@@ -53,7 +53,7 @@ double GetT(const char** s)
 
     SkipSpaces(s);
 
-    double val = GetP(s);
+    double val = GetS(s);
 
     SkipSpaces(s);
 
@@ -61,13 +61,32 @@ double GetT(const char** s)
     {
         double op = (**s);
         (*s)++;
-        double val2 = GetP(s);
+        double val2 = GetS(s);
         if(op == '*') val *= val2;
         else          val /= val2;
     }
 
     ON_DEBUG_PRINT("OUT GetT\n");
     return val;
+}
+double GetS(const char** s)
+{
+    assert(s);
+    assert(*s);
+
+    SkipSpaces(s);
+    double val1 = GetP(s);
+    SkipSpaces(s);
+
+    if(**s == '^')
+    {
+        (*s)++;
+        double val2 = GetP(s);
+
+        val1 = pow(val1, val2);
+    }
+
+    return val1;
 }
 double GetP(const char** s)
 {

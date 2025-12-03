@@ -22,6 +22,7 @@ const size_t ST_EXP_LEN = 5;
 double GetG(const char** s);
 double GetE(const char** s);
 double GetT(const char** s);
+double GetS(const char** s);
 double GetP(const char** s);
 double GetN(const char** s);
 double SkipSpaces(const char** s);
