@@ -22,7 +22,7 @@ double GetG(const char** s)
     ON_DEBUG_PRINT("OUT GetG\n");
     return val;
 }
-/*Node_t* */double GetE(const char** s)
+double GetE(const char** s)
 {
     ON_DEBUG_PRINT("IN GetE\n");
 
@@ -31,13 +31,13 @@ double GetG(const char** s)
 
     SkipSpaces(s);
 
-    double val = GetT(s); // Node_t* val1
+    double val = GetT(s);
     while((**s) == '+' || (**s) == '-')
     {
         double op = (**s);
         (*s)++;
         double val2 = GetT(s);
-        if(op == '+') val += val2; //Node_t* val2 = TreeNodeCtor()
+        if(op == '+') val += val2;
         else          val -= val2;
     }
 
@@ -86,6 +86,8 @@ double GetP(const char** s)
         SkipSpaces(s);
 
         double val = GetE(s);
+
+        SkipSpaces(s);
         if((**s) == ')')
         {
             (*s)++;
@@ -107,7 +109,7 @@ double GetP(const char** s)
         return GetN(s);
     }
 }
-/*Node_t* */double GetN(const char** s)
+double GetN(const char** s)
 {
     ON_DEBUG_PRINT("IN GetN\n");
 
@@ -115,6 +117,18 @@ double GetP(const char** s)
     assert(*s);
 
     SkipSpaces(s);
+
+    double sign = 1;
+    if(**s == '-')
+    {
+        sign = -1;
+        (*s)++;
+    }
+    if(!('0'<=(**s) && (**s)<='9'))
+    {
+        ERR_PRINT("SyntaxErr\n");
+        return 0;
+    }
 
     double val = 0;
     while('0'<=(**s) && (**s)<='9')
@@ -139,7 +153,7 @@ double GetP(const char** s)
     }
 
     ON_DEBUG_PRINT("OUT GetN\n");
-    return val; // TreeNodeCtor_(NUM, {.num = val}, NULL, NULL)
+    return val * sign; // TreeNodeCtor_(NUM, {.num = val}, NULL, NULL)
 }
 double SkipSpaces(const char** s)
 {
