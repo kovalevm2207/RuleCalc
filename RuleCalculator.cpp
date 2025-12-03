@@ -31,7 +31,7 @@ double GetE(const char** s)
 
     SkipSpaces(s);
 
-    double val = GetT(s);
+    int val = GetT(s);
     while((**s) == '+' || (**s) == '-')
     {
         double op = (**s);
@@ -59,7 +59,7 @@ double GetT(const char** s)
 
     while((**s) == '*' || (**s) == '/')
     {
-        double op = (**s);
+        int op = (**s);
         (*s)++;
         double val2 = GetS(s);
         if(op == '*') val *= val2;
