@@ -4,7 +4,7 @@ int main()
 {
     char* user_exp = NULL;
     size_t st_size = ST_EXP_LEN;
-    size_t n_pos = getline(&user_exp, &st_size, stdin);
+    ssize_t n_pos = getline(&user_exp, &st_size, stdin);
     user_exp[n_pos - 1] = '\0';
 
     const char* s = user_exp;

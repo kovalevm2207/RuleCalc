@@ -17,6 +17,7 @@
 #endif
 
 #define ERR_PRINT(text) fprintf(stderr, RED_COLOR text RESET)
+#define FREE(ptr) free(ptr); ptr = NULL
 
 const size_t ST_EXP_LEN = 5;
 const size_t ST_W_LEN = 5;

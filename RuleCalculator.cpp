@@ -33,10 +33,10 @@ double GetE(const char** s, const char* const base)
 
     SkipSpaces(s);
 
-    int val = GetT(s, base);
+    double val = GetT(s, base);
     while((**s) == '+' || (**s) == '-')
     {
-        double op = (**s);
+        int op = (**s);
         (*s)++;
         double val2 = GetT(s, base);
         if(op == '+') val += val2;
@@ -109,13 +109,16 @@ double GetF(const char** s, const char* const base)
         {
             if(strcmp(word, func[i].name) == 0)
             {
+                FREE(word);
                 return func[i].action(val);
             }
         }
+        FREE(word);
         DumpSyntaxErr(base, *s);
         return 0;
     }
 
+    FREE(word);
     return val;
 }
 double GetP(const char** s, const char* const base)
@@ -182,7 +185,6 @@ double GetN(const char** s, const char* const base)
     }
 
     double val = 0;
-    int counter = 0;
     while('0'<=(**s) && (**s)<='9')
     {
         val = val*10 + ((**s) - '0');
@@ -194,7 +196,7 @@ double GetN(const char** s, const char* const base)
         ++*s;
 
         double frac_part = 0;
-        double order = 1;
+        int order = 1;
         while('0'<=(**s) && (**s)<='9')
         {
             frac_part += ((**s) - '0') / pow(10, order++);
