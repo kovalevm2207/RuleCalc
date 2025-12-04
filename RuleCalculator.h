@@ -21,15 +21,15 @@
 const size_t ST_EXP_LEN = 5;
 const size_t ST_W_LEN = 5;
 
-
-double GetG(const char** s);
-double GetE(const char** s);
-double GetT(const char** s);
-double GetS(const char** s);
-double GetF(const char** s);
-double GetP(const char** s);
-double GetN(const char** s);
-char*  GetW(const char** s);
+int DumpSyntaxErr(const char* const base, const char* const err_place);
+double GetG(const char** s, const char* const base);
+double GetE(const char** s, const char* const base);
+double GetT(const char** s, const char* const base);
+double GetS(const char** s, const char* const base);
+double GetF(const char** s, const char* const base);
+double GetP(const char** s, const char* const base);
+double GetN(const char** s, const char* const base);
+char*  GetW(const char** s, const char* const base);
 double SkipSpaces(const char** s);
 size_t CheckLen(char** word, size_t word_len, const size_t letter);
 double cotan(double val);

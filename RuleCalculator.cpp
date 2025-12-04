@@ -1,20 +1,21 @@
 #include "RuleCalculator.h"
 
-double GetG(const char** s)
+double GetG(const char** s, const char* const base)
 {
     ON_DEBUG_PRINT("IN GetG\n");
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
-    double val = GetE(s);
+    double val = GetE(s, base);
 
     SkipSpaces(s);
 
     if((**s) != '\0')
     {
-        ERR_PRINT("SyntaxErr\n");
+        DumpSyntaxErr(base, *s);
         return 0;
     }
     (*s)++;
@@ -22,21 +23,22 @@ double GetG(const char** s)
     ON_DEBUG_PRINT("OUT GetG\n");
     return val;
 }
-double GetE(const char** s)
+double GetE(const char** s, const char* const base)
 {
     ON_DEBUG_PRINT("IN GetE\n");
 
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
-    int val = GetT(s);
+    int val = GetT(s, base);
     while((**s) == '+' || (**s) == '-')
     {
         double op = (**s);
         (*s)++;
-        double val2 = GetT(s);
+        double val2 = GetT(s, base);
         if(op == '+') val += val2;
         else          val -= val2;
     }
@@ -44,16 +46,17 @@ double GetE(const char** s)
     ON_DEBUG_PRINT("OUT GetE\n");
     return val;
 }
-double GetT(const char** s)
+double GetT(const char** s, const char* const base)
 {
     ON_DEBUG_PRINT("IN GetT\n");
 
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
-    double val = GetS(s);
+    double val = GetS(s, base);
 
     SkipSpaces(s);
 
@@ -61,7 +64,7 @@ double GetT(const char** s)
     {
         int op = (**s);
         (*s)++;
-        double val2 = GetS(s);
+        double val2 = GetS(s, base);
         if(op == '*') val *= val2;
         else          val /= val2;
     }
@@ -69,34 +72,36 @@ double GetT(const char** s)
     ON_DEBUG_PRINT("OUT GetT\n");
     return val;
 }
-double GetS(const char** s)
+double GetS(const char** s, const char* const base)
 {
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
-    double val1 = GetF(s);
+    double val1 = GetF(s, base);
     SkipSpaces(s);
 
     if(**s == '^')
     {
         (*s)++;
-        double val2 = GetF(s);
+        double val2 = GetF(s, base);
 
         val1 = pow(val1, val2);
     }
 
     return val1;
 }
-double GetF(const char** s)
+double GetF(const char** s, const char* const base)
 {
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
-    char* word = GetW(s);
-    double val = GetP(s);
+    char* word = GetW(s, base);
+    double val = GetP(s, base);
 
     if(word)
     {
@@ -107,18 +112,19 @@ double GetF(const char** s)
                 return func[i].action(val);
             }
         }
-        ERR_PRINT("SyntaxErr\n");
+        DumpSyntaxErr(base, *s);
         return 0;
     }
 
     return val;
 }
-double GetP(const char** s)
+double GetP(const char** s, const char* const base)
 {
     ON_DEBUG_PRINT("IN GetP\n");
 
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
@@ -129,7 +135,7 @@ double GetP(const char** s)
 
         SkipSpaces(s);
 
-        double val = GetE(s);
+        double val = GetE(s, base);
 
         SkipSpaces(s);
         if((**s) == ')')
@@ -143,22 +149,23 @@ double GetP(const char** s)
         }
         else
         {
-            ERR_PRINT("SyntaxErr\n");
+            DumpSyntaxErr(base, *s);
             return 0;
         }
     }
     else
     {
         ON_DEBUG_PRINT("OUT GetP N\n");
-        return GetN(s);
+        return GetN(s, base);
     }
 }
-double GetN(const char** s)
+double GetN(const char** s, const char* const base)
 {
     ON_DEBUG_PRINT("IN GetN\n");
 
     assert(s);
     assert(*s);
+    assert(base);
 
     SkipSpaces(s);
 
@@ -170,11 +177,12 @@ double GetN(const char** s)
     }
     if(!('0'<=(**s) && (**s)<='9'))
     {
-        ERR_PRINT("SyntaxErr\n");
+        DumpSyntaxErr(base, *s);
         return 0;
     }
 
     double val = 0;
+    int counter = 0;
     while('0'<=(**s) && (**s)<='9')
     {
         val = val*10 + ((**s) - '0');
@@ -192,6 +200,11 @@ double GetN(const char** s)
             frac_part += ((**s) - '0') / pow(10, order++);
             (*s)++;
         }
+        if(order == 1)
+        {
+            DumpSyntaxErr(base, *s);
+            return 0;
+        }
 
         val += frac_part;
     }
@@ -199,10 +212,11 @@ double GetN(const char** s)
     ON_DEBUG_PRINT("OUT GetN\n");
     return val * sign; // TreeNodeCtor_(NUM, {.num = val}, NULL, NULL)
 }
-char*  GetW(const char** s)
+char*  GetW(const char** s, const char* const base)
 {
     assert(s);
     assert(*s);
+    assert(base);
 
     char* word = (char*) calloc(ST_W_LEN, sizeof(char));
     assert(word && "mem alloc err (calloc)");
@@ -275,4 +289,27 @@ double cotan(double val)
 double ctanh(double val)
 {
     return 1/tanh(val);
+}
+int DumpSyntaxErr(const char* const base, const char* const err_place)
+{
+    assert(base);
+    assert(err_place);
+
+    ERR_PRINT("SyntaxErr:\n\n");
+    size_t i = 0;
+    while(base[i] != '\0')
+    {
+        printf("%c", base[i++]);
+    }
+    i = 0;
+    printf("\n");
+    while(base[i] != '\0')
+    {
+        ERR_PRINT("~");
+        if(base + i++ == err_place)
+            ERR_PRINT("^");
+    }
+    printf("\n\n");
+
+    return 0;
 }
